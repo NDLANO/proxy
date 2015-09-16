@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source ./build.properties
+
 PROJECT=ndla/proxy
 VER=v0.1
 GIT_HASH=`git log --pretty=format:%h -n 1`
