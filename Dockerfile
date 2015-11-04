@@ -1,6 +1,6 @@
-FROM nginx
+FROM ndla/nginx-lua
 
 # Delete examplefiles
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm /nginx/conf.d/default.conf
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /nginx/nginx.conf
