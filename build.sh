@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if ! git diff-index --quiet HEAD --; then
-    echo "You have uncommited changes in your git repo. Commit before building"
-    exit 1
-fi
-
 source ./build.properties
 
 PROJECT=ndla/proxy
