@@ -32,7 +32,16 @@ http {
     set $udir_proxy_container 'http://${API_SERVER_IP}:30004';
     set $h5p_container 'http://${API_SERVER_IP}:30005';
 
+    # Need to set environment-variable to nginx variable to be able to use them in if statements.
+    set $location_content_enabled ${LOCATION_CONTENT_ENABLED};
+    set $location_udir_enabled ${LOCATION_UDIR_ENABLED};
+    set $location_h5p_enabled ${LOCATION_H5P_ENABLED};
+    set $location_packages_enabled ${LOCATION_PACKAGES_ENABLED};
+
     location /api-docs/content {
+      if ($location_content_enabled != "true") {
+        return 404;
+      }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -47,6 +56,9 @@ http {
     }
 
     location /api-docs/udir {
+      if ($location_udir_enabled != "true") {
+        return 404;
+      }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -54,12 +66,14 @@ http {
     }
 
     location ~* ^/content(.*) {
+      if ($location_content_enabled != "true") {
+        return 404;
+      }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $content_container/content$1$is_args$args;
     }
-
 
     location ~* ^/images(.*) {
       proxy_set_header  Host $http_host;
@@ -69,6 +83,9 @@ http {
     }
 
     location ~* ^/packages(.*) {
+      if ($location_packages_enabled != true) {
+        return 404;
+      }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -76,6 +93,9 @@ http {
     }
 
     location ~* ^/udir(.*) {
+      if ($location_udir_enabled != true) {
+            return 404;
+      }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -83,10 +103,14 @@ http {
     }
 
     location ~* ^/h5p(.*) {
+      if ($location_h5p_enabled != true) {
+        return 404;
+      }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $h5p_container/h5p$1$is_args$args;
+
     }
 
     location / {
