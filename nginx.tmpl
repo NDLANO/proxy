@@ -16,17 +16,17 @@ http {
     error_log stderr debug;
 
     location ~* ^/images/(full|thumbs)(.*) {
-      set $s3_bucket        's3.eu-central-1.amazonaws.com/images.prod.ndla';
+      set $s3_bucket        's3.eu-central-1.amazonaws.com/${STORAGE_NAME}';
       set $url_image        '$1$2';
 
-      resolver               10.0.0.2 valid=300s;
+      resolver               ${DNS_SERVER} valid=300s;
       resolver_timeout       10s;
 
       proxy_pass             https://$s3_bucket/$url_image;
     }
 
-    set $documentation_container 'http://10.0.4.187:30000';
-    set $images_container 'http://10.0.4.187:30001';
+    set $documentation_container 'http://${API_SERVER_IP}:30000';
+    set $images_container 'http://${API_SERVER_IP}:30001';
 
     location /api-docs/images {
       proxy_set_header  Host $http_host;
