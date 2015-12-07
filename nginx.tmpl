@@ -1,0 +1,124 @@
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+  worker_connections  1024;
+}
+
+http {
+
+  server {
+    charset UTF-8;
+    error_log stderr debug;
+
+    location ~* ^/images/(full|thumbs)(.*) {
+      set $s3_bucket        's3.eu-central-1.amazonaws.com/${STORAGE_NAME}';
+      set $url_image        '$1$2';
+
+      resolver               ${DNS_SERVER} valid=300s;
+      resolver_timeout       10s;
+
+      proxy_pass             https://$s3_bucket/$url_image;
+    }
+
+    set $documentation_container 'http://${API_SERVER_IP}:30000';
+    set $content_container 'http://${API_SERVER_IP}:30002';
+    set $images_container 'http://${API_SERVER_IP}:30001';
+    set $packages_container 'http://${API_SERVER_IP}:30003';
+    set $udir_proxy_container 'http://${API_SERVER_IP}:30004';
+    set $h5p_container 'http://${API_SERVER_IP}:30005';
+
+    # Need to set environment-variable to nginx variable to be able to use them in if statements.
+    set $location_content_enabled ${LOCATION_CONTENT_ENABLED};
+    set $location_udir_enabled ${LOCATION_UDIR_ENABLED};
+    set $location_h5p_enabled ${LOCATION_H5P_ENABLED};
+    set $location_packages_enabled ${LOCATION_PACKAGES_ENABLED};
+
+    location /api-docs/content {
+      if ($location_content_enabled != "true") {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $content_container/api-docs/content;
+    }
+
+    location /api-docs/images {
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $images_container/api-docs/images;
+    }
+
+    location /api-docs/udir {
+      if ($location_udir_enabled != "true") {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $udir_proxy_container/api-docs/udir;
+    }
+
+    location ~* ^/content(.*) {
+      if ($location_content_enabled != "true") {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $content_container/content$1$is_args$args;
+    }
+
+    location ~* ^/images(.*) {
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $images_container/images$1$is_args$args;
+    }
+
+    location ~* ^/packages(.*) {
+      if ($location_packages_enabled != true) {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $packages_container/packages$1$is_args$args;
+    }
+
+    location ~* ^/udir(.*) {
+      if ($location_udir_enabled != true) {
+            return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $udir_proxy_container/udir$1$is_args$args;
+    }
+
+    location ~* ^/h5p(.*) {
+      if ($location_h5p_enabled != true) {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $h5p_container/h5p$1$is_args$args;
+
+    }
+
+    location / {
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $documentation_container;
+    }
+  }
+}
+
