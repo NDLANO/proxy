@@ -38,6 +38,7 @@ http {
     set $location_udir_enabled ${LOCATION_UDIR_ENABLED};
     set $location_h5p_enabled ${LOCATION_H5P_ENABLED};
     set $location_packages_enabled ${LOCATION_PACKAGES_ENABLED};
+    set $location_auth_enabled ${LOCATION_AUTH_ENABLED};
 
     location /api-docs/content {
       if ($location_content_enabled != "true") {
@@ -114,7 +115,7 @@ http {
     }
 
     location ~* ^/auth(.*) {
-      if ($location_udir_enabled != true) {
+      if ($location_auth_enabled != true) {
             return 404;
       }
       proxy_set_header  Host $http_host;
