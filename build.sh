@@ -1,12 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
+VERSION="$1"
 source ./build.properties
+PROJECT="$NDLAOrganization/$NDLAComponentName"
 
-PROJECT=ndla/proxy
-VER=v0.1
-GIT_HASH=`git log --pretty=format:%h -n 1`
-
-VERSION=${VER}_${GIT_HASH}
+if [ -z $VERSION ]
+then
+    VERSION="SNAPSHOT"
+fi
 
 docker build -t $PROJECT:$VERSION .
-echo "Built $PROJECT:$VERSION"
+echo "BUILT $PROJECT:$VERSION"
