@@ -34,6 +34,7 @@ http {
     set $auth_container 'http://${API_SERVER_IP}:30006';
     set $kong_container 'http://${API_SERVER_IP}:8000';
     set $learningpath_frontend_container 'http://${API_SERVER_IP}:30007';
+    set $learningpath_api_container 'http://${API_SERVER_IP}:30008';
 
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_content_enabled ${LOCATION_CONTENT_ENABLED};
@@ -160,6 +161,16 @@ http {
       proxy_pass $learningpath_frontend_container/learningpath$1$is_args$args;
     }
 
+    location ~* ^/paths/private(.*) {
+      if ($location_learningpath_api_enabled != "true") {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $kong_container/paths/private$1$is_args$args;
+    }
+    
     location ~* ^/paths(.*) {
       if ($location_learningpath_api_enabled != "true") {
         return 404;
@@ -167,8 +178,9 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $kong_container/paths$1$is_args$args;
+      proxy_pass $learningpath_api_container/paths$1$is_args$args;
     }
+
 
     location / {
       proxy_set_header  Host $http_host;
