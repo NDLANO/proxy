@@ -35,6 +35,7 @@ http {
     set $kong_container 'http://${API_SERVER_IP}:8000';
     set $learningpath_frontend_container 'http://${API_SERVER_IP}:30007';
     set $learningpath_api_container 'http://${API_SERVER_IP}:30008';
+    set $oembed_proxy_container 'http://${API_SERVER_IP}:30009';
 
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_content_enabled ${LOCATION_CONTENT_ENABLED};
@@ -45,6 +46,7 @@ http {
     set $location_kong_enabled ${LOCATION_KONG_ENABLED};
     set $location_learningpath_frontend_enabled ${LOCATION_LEARNINGPATH_FRONTEND_ENABLED};
     set $location_learningpath_api_enabled ${LOCATION_LEARNINGPATH_API_ENABLED};
+    set $location_oembed_proxy_enabled ${LOCATION_OEMBED_PROXY_ENABLED};
 
     location /api-docs/content {
       if ($location_content_enabled != "true") {
@@ -91,6 +93,16 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $learningpath_api_container/api-docs/learningpaths;
+    }
+
+    location /api-docs/oembed {
+      if ($location_oembed_proxy_enabled != "true") {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $oembed_proxy_container/api-docs/oembed;
     }
 
     location ~* ^/content(.*) {
@@ -233,6 +245,28 @@ http {
         proxy_pass $learningpath_api_container/learningpaths$1$is_args$args;
       }
       proxy_pass $kong_container/learningpaths$1$is_args$args;
+    }
+
+    location ~* ^/oembed(.*) {
+      if ($location_oembed_proxy_enabled != "true") {
+        return 404;
+      }
+
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS, HEAD';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,app-key';
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'text/plain charset=UTF-8';
+        add_header 'Content-Length' 0;
+        return 204;
+      }
+
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $kong_container/oembed$1$is_args$args;
     }
 
     location / {
