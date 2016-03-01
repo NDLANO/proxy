@@ -14,6 +14,7 @@ http {
   server {
     charset UTF-8;
     error_log stderr debug;
+    access_log stdout;
 
     location ~* ^/images/(full|thumbs)(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${STORAGE_NAME}';
