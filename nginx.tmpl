@@ -13,8 +13,8 @@ http {
 
   server {
     charset UTF-8;
-    error_log stderr debug;
-    access_log stdout;
+    error_log /var/log/nginx/error.log debug;
+    access_log /var/log/nginx/access.log;
 
     location ~* ^/images/(full|thumbs)(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${STORAGE_NAME}';
