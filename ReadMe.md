@@ -1,14 +1,13 @@
 # PROXY
 
-Nginx proxy for api.test.ndla.no
+Nginx proxy for NDLA
 
 # Building and distribution
 
 ## Create Docker Image
     ./build.sh
 
-You need to have a docker daemon running locally. Ex: [boot2docker](http://boot2docker.io/)
+You need to have a docker daemon running locally.
 
 ## Deploy Docker Image to Amazon (via DockerHub)
-    cd src/main/deploy  
-    deployRemote.sh
+    See ../deploy/ReadMe.md
