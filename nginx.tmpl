@@ -38,6 +38,7 @@ http {
     set $learningpath_api_container 'http://${API_SERVER_IP}:30008';
     set $oembed_proxy_container 'http://${API_SERVER_IP}:30009';
     set $test_clients_container 'http://${API_SERVER_IP}:30010';
+    set $content_frontend_container 'http://${API_SERVER_IP}:30011';
 
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_content_enabled ${LOCATION_CONTENT_ENABLED};
@@ -50,6 +51,7 @@ http {
     set $location_learningpath_api_enabled ${LOCATION_LEARNINGPATH_API_ENABLED};
     set $location_oembed_proxy_enabled ${LOCATION_OEMBED_PROXY_ENABLED};
     set $location_test_clients_enabled ${LOCATION_TEST_CLIENTS_ENABLED};
+    set $location_content_frontend_enabled ${LOCATION_CONTENT_FRONTEND_ENABLED};
 
     location /api-docs/content {
       if ($location_content_enabled != "true") {
@@ -211,6 +213,17 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $test_clients_container;
+    }
+
+    location ~* ^/content-frontend(.*) {
+      if ($location_content_frontend_enabled != "true") {
+        return 404;
+      }
+
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $content_frontend_container;
     }
 
     location ~* ^/learningpaths(.*) {
