@@ -53,6 +53,10 @@ http {
     set $location_test_clients_enabled ${LOCATION_TEST_CLIENTS_ENABLED};
     set $location_content_frontend_enabled ${LOCATION_CONTENT_FRONTEND_ENABLED};
 
+    location ~* ^/health$ {
+        return 204;
+    }
+
     location /api-docs/content {
       if ($location_content_enabled != "true") {
         return 404;
