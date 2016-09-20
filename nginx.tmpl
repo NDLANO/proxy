@@ -38,6 +38,7 @@ http {
     set $oembed_proxy_container 'http://${API_SERVER_IP}:30009';
     set $test_clients_container 'http://${API_SERVER_IP}:30010';
     set $article_oembed_container 'http://${API_SERVER_IP}:30011';
+    set $audio_container 'http://${API_SERVER_IP}:30014';
 
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_article_enabled ${LOCATION_ARTICLE_ENABLED};
@@ -51,8 +52,10 @@ http {
     set $location_oembed_proxy_enabled ${LOCATION_OEMBED_PROXY_ENABLED};
     set $location_test_clients_enabled ${LOCATION_TEST_CLIENTS_ENABLED};
     set $location_article_oembed_enabled ${LOCATION_ARTICLE_OEMBED_ENABLED};
+    set $location_audio_enabled ${LOCATION_AUDIO_ENABLED};
 
     location ~* ^/health$ {
+        add_header 'Content-Length' 0;
         return 204;
     }
 
@@ -111,6 +114,16 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $oembed_proxy_container/api-docs/oembed;
+    }
+
+    location /api-docs/audio {
+      if ($location_audio_enabled != "true") {
+        return 404;
+      }
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $audio_container/api-docs/audio;
     }
 
     location ~* ^/article-oembed(.*) {
@@ -283,6 +296,17 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $kong_container/oembed$1$is_args$args;
+    }
+
+    location ~* ^/audio(.*) {
+      if ($location_audio_enabled != "true") {
+        return 404;
+      }
+
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $audio_container/audio$1$is_args$args;
     }
 
     location / {
