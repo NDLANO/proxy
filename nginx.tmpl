@@ -25,9 +25,9 @@ http {
       proxy_pass             https://$s3_bucket/$url_image;
     }
 
-    location ~* ^/audio/files(.*) {
+    location ~* ^/audio/files/(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${AUDIO_STORAGE_NAME}';
-      set $url_image        '$1$2';
+      set $url_image        '$1';
 
       resolver               ${DNS_SERVER} valid=300s;
       resolver_timeout       10s;
