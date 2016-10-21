@@ -1,3 +1,5 @@
+load_module "modules/ngx_http_image_filter_module.so";
+
 user  nginx;
 worker_processes  1;
 
@@ -10,6 +12,8 @@ events {
 }
 
 http {
+  proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=image_resize_cache:10M max_size=100M inactive=40d;
+
   server {
     charset UTF-8;
     error_log /var/log/nginx/error.log debug;
@@ -18,11 +22,33 @@ http {
     location ~* ^/images/(full|thumbs)(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${IMAGE_STORAGE_NAME}';
       set $url_image        '$1$2';
+      set $width -;
+      set $height -;
+
+      if ($args ~ width=([0-9]+)) {
+        set $width $1;
+      }
+
+      if ($args ~ height=([0-9]+)) {
+        set $height $1;
+      }
+
+      image_filter_buffer 20M;
+      image_filter_jpeg_quality 75;
+      image_filter_interlace on;
+      image_filter resize $width $height;
 
       resolver               ${DNS_SERVER} valid=300s;
       resolver_timeout       10s;
 
-      proxy_pass             https://$s3_bucket/$url_image;
+      proxy_pass             https://$s3_bucket/$url_image?;
+      proxy_cache image_resize_cache;
+      proxy_cache_key "$proxy_host$uri$is_args$args";
+      proxy_cache_valid 30d;
+      proxy_cache_lock on;
+      proxy_cache_use_stale error invalid_header timeout updating;
+      proxy_http_version 1.1;
+      expires 30d;
     }
 
     location ~* ^/audio/files/(.*) {
