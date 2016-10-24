@@ -1,4 +1,4 @@
-FROM nginx:1.9.7
+FROM nginx:1.11.5
 
 # Delete examplefiles
 RUN rm /etc/nginx/conf.d/default.conf
