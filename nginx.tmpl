@@ -61,28 +61,26 @@ http {
       proxy_pass             https://$s3_bucket/$url_image;
     }
 
-    set $documentation_container 'http://${API_SERVER_IP}:30000';
-    set $article_container 'http://${API_SERVER_IP}:30002';
-    set $images_container 'http://${API_SERVER_IP}:30001';
-    set $packages_container 'http://${API_SERVER_IP}:30003';
-    set $udir_proxy_container 'http://${API_SERVER_IP}:30004';
-    set $h5p_container 'http://${API_SERVER_IP}:30005';
-    set $auth_container 'http://${API_SERVER_IP}:30006';
-    set $kong_container 'http://${API_SERVER_IP}:8000';
-    set $learningpath_frontend_container 'http://${API_SERVER_IP}:30007';
-    set $learningpath_api_container 'http://${API_SERVER_IP}:30008';
-    set $oembed_proxy_container 'http://${API_SERVER_IP}:30009';
-    set $test_clients_container 'http://${API_SERVER_IP}:30010';
-    set $article_oembed_container 'http://${API_SERVER_IP}:30011';
-    set $audio_container 'http://${API_SERVER_IP}:30014';
+    set $documentation_container 'http://api-documentation.ndla-local';
+    set $article_container 'http://article-api.ndla-local';
+    set $images_container 'http://image-api.ndla-local';
+    set $grep_container 'http://grep.ndla-local';
+    set $h5p_container 'http://h5p-api.ndla-local';
+    set $auth_container 'http://auth.ndla-local';
+    set $kong_container 'http://api-gateway.ndla-local';
+    set $learningpath_frontend_container 'http://learningpath-frontend.ndla-local';
+    set $learningpath_api_container 'http://learningpath-api.ndla-local';
+    set $oembed_proxy_container 'http://oembed-proxy.ndla-local';
+    set $test_clients_container 'http://test-clients.ndla-local';
+    set $article_oembed_container 'http://article-oembed.ndla-local';
+    set $audio_container 'http://audio-api.ndla-local';
 
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_article_enabled ${LOCATION_ARTICLE_ENABLED};
-    set $location_udir_enabled ${LOCATION_UDIR_ENABLED};
+    set $location_grep_enabled ${LOCATION_GREP_ENABLED};
     set $location_h5p_enabled ${LOCATION_H5P_ENABLED};
-    set $location_packages_enabled ${LOCATION_PACKAGES_ENABLED};
     set $location_auth_enabled ${LOCATION_AUTH_ENABLED};
-    set $location_kong_enabled ${LOCATION_KONG_ENABLED};
+    set $location_api_gateway_enabled ${LOCATION_API_GATEWAY_ENABLED};
     set $location_learningpath_frontend_enabled ${LOCATION_LEARNINGPATH_FRONTEND_ENABLED};
     set $location_learningpath_api_enabled ${LOCATION_LEARNINGPATH_API_ENABLED};
     set $location_oembed_proxy_enabled ${LOCATION_OEMBED_PROXY_ENABLED};
@@ -113,13 +111,13 @@ http {
     }
 
     location /api-docs/udir {
-      if ($location_udir_enabled != "true") {
+      if ($location_grep_enabled != "true") {
         return 404;
       }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $udir_proxy_container/api-docs/udir;
+      proxy_pass $grep_container/api-docs/udir;
     }
 
     location /api-docs/h5p {
@@ -201,24 +199,14 @@ http {
       proxy_pass $images_container/images$1$is_args$args;
     }
 
-    location ~* ^/packages(.*) {
-      if ($location_packages_enabled != true) {
-        return 404;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $packages_container/packages$1$is_args$args;
-    }
-
     location ~* ^/udir(.*) {
-      if ($location_udir_enabled != true) {
+      if ($location_grep_enabled != true) {
             return 404;
       }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $udir_proxy_container/udir$1$is_args$args;
+      proxy_pass $grep_container/udir$1$is_args$args;
     }
 
     location ~* ^/auth/login(.*) {
@@ -245,7 +233,7 @@ http {
     }
 
     location ~* ^/auth(.*) {
-      if ($location_kong_enabled != true) {
+      if ($location_api_gateway_enabled != true) {
         return 404;
       }
 
