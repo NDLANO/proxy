@@ -12,6 +12,54 @@ events {
 }
 
 http {
+  upstream docs {
+    server api-documentation.ndla-local;
+  }
+
+  upstream articles {
+    server article-api.ndla-local;
+  }
+
+  upstream images {
+    server image-api.ndla-local;
+  }
+
+  upstream grep {
+    server grep.ndla-local;
+  }
+
+  upstream auth {
+    server auth.ndla-local;
+  }
+
+  upstream api-gateway {
+    server api-gateway.ndla-local;
+  }
+
+  upstream learningpath-frontend {
+    server learningpath-frontend.ndla-local;
+  }
+
+  upstream learningpath-api {
+    server learningpath-api.ndla-local;
+  }
+
+  upstream oembed-proxy {
+    server oembed-proxy.ndla-local;
+  }
+
+  upstream test-clients {
+    server test-clients.ndla-local;
+  }
+
+  upstream article-oembed {
+    server article-oembed.ndla-local;
+  }
+
+  upstream audio-api {
+    server audio-api.ndla-local;
+  }
+
   proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=image_resize_cache:10M max_size=100M inactive=40d;
 
   server {
@@ -61,19 +109,19 @@ http {
       proxy_pass             https://$s3_bucket/$url_image;
     }
 
-    set $documentation_container 'http://api-documentation.ndla-local';
-    set $article_container 'http://article-api.ndla-local';
-    set $images_container 'http://image-api.ndla-local';
-    set $grep_container 'http://grep.ndla-local';
-    set $h5p_container 'http://h5p-api.ndla-local';
-    set $auth_container 'http://auth.ndla-local';
-    set $kong_container 'http://api-gateway.ndla-local';
-    set $learningpath_frontend_container 'http://learningpath-frontend.ndla-local';
-    set $learningpath_api_container 'http://learningpath-api.ndla-local';
-    set $oembed_proxy_container 'http://oembed-proxy.ndla-local';
-    set $test_clients_container 'http://test-clients.ndla-local';
-    set $article_oembed_container 'http://article-oembed.ndla-local';
-    set $audio_container 'http://audio-api.ndla-local';
+    set $documentation_container 'http://docs';
+    set $article_container 'http://articles';
+    set $images_container 'http://images';
+    set $grep_container 'http://grep';
+    set $h5p_container 'http://h5p';
+    set $auth_container 'http://auth';
+    set $kong_container 'http://api-gateway';
+    set $learningpath_frontend_container 'http://learningpath-frontend';
+    set $learningpath_api_container 'http://learningpath-api';
+    set $oembed_proxy_container 'http://oembed-proxy';
+    set $test_clients_container 'http://test-clients';
+    set $article_oembed_container 'http://article-oembed';
+    set $audio_container 'http://audio-api';
 
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_article_enabled ${LOCATION_ARTICLE_ENABLED};
