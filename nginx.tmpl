@@ -12,6 +12,50 @@ events {
 }
 
 http {
+  upstream docs {
+    server api-documentation.ndla-local;
+  }
+
+  upstream articles {
+    server article-api.ndla-local;
+  }
+
+  upstream images {
+    server image-api.ndla-local;
+  }
+
+  upstream grep {
+    server grep.ndla-local;
+  }
+
+  upstream auth {
+    server auth.ndla-local;
+  }
+
+  upstream api-gateway {
+    server api-gateway.ndla-local;
+  }
+
+  upstream learningpath-api {
+    server learningpath-api.ndla-local;
+  }
+
+  upstream oembed-proxy {
+    server oembed-proxy.ndla-local;
+  }
+
+  upstream test-clients {
+    server test-clients.ndla-local;
+  }
+
+  upstream article-oembed {
+    server article-oembed.ndla-local;
+  }
+
+  upstream audio-api {
+    server audio-api.ndla-local;
+  }
+
   proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=image_resize_cache:10M max_size=100M inactive=40d;
 
   server {
@@ -61,29 +105,11 @@ http {
       proxy_pass             https://$s3_bucket/$url_image;
     }
 
-    set $documentation_container 'http://${API_SERVER_IP}:30000';
-    set $article_container 'http://${API_SERVER_IP}:30002';
-    set $images_container 'http://${API_SERVER_IP}:30001';
-    set $packages_container 'http://${API_SERVER_IP}:30003';
-    set $udir_proxy_container 'http://${API_SERVER_IP}:30004';
-    set $h5p_container 'http://${API_SERVER_IP}:30005';
-    set $auth_container 'http://${API_SERVER_IP}:30006';
-    set $kong_container 'http://${API_SERVER_IP}:8000';
-    set $learningpath_frontend_container 'http://${API_SERVER_IP}:30007';
-    set $learningpath_api_container 'http://${API_SERVER_IP}:30008';
-    set $oembed_proxy_container 'http://${API_SERVER_IP}:30009';
-    set $test_clients_container 'http://${API_SERVER_IP}:30010';
-    set $article_oembed_container 'http://${API_SERVER_IP}:30011';
-    set $audio_container 'http://${API_SERVER_IP}:30014';
-
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_article_enabled ${LOCATION_ARTICLE_ENABLED};
-    set $location_udir_enabled ${LOCATION_UDIR_ENABLED};
-    set $location_h5p_enabled ${LOCATION_H5P_ENABLED};
-    set $location_packages_enabled ${LOCATION_PACKAGES_ENABLED};
+    set $location_grep_enabled ${LOCATION_GREP_ENABLED};
     set $location_auth_enabled ${LOCATION_AUTH_ENABLED};
-    set $location_kong_enabled ${LOCATION_KONG_ENABLED};
-    set $location_learningpath_frontend_enabled ${LOCATION_LEARNINGPATH_FRONTEND_ENABLED};
+    set $location_api_gateway_enabled ${LOCATION_API_GATEWAY_ENABLED};
     set $location_learningpath_api_enabled ${LOCATION_LEARNINGPATH_API_ENABLED};
     set $location_oembed_proxy_enabled ${LOCATION_OEMBED_PROXY_ENABLED};
     set $location_test_clients_enabled ${LOCATION_TEST_CLIENTS_ENABLED};
@@ -102,34 +128,24 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $article_container/api-docs/articles;
+      proxy_pass http://articles/api-docs/articles;
     }
 
     location /api-docs/images {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $images_container/api-docs/images;
+      proxy_pass http://images/api-docs/images;
     }
 
-    location /api-docs/udir {
-      if ($location_udir_enabled != "true") {
+    location /api-docs/grep {
+      if ($location_grep_enabled != "true") {
         return 404;
       }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $udir_proxy_container/api-docs/udir;
-    }
-
-    location /api-docs/h5p {
-      if ($location_h5p_enabled != "true") {
-        return 404;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $h5p_container/api-docs/h5p;
+      proxy_pass http://grep/api-docs/grep;
     }
 
     location /api-docs/learningpaths {
@@ -139,7 +155,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $learningpath_api_container/api-docs/learningpaths;
+      proxy_pass http://learningpath-api/api-docs/learningpaths;
     }
 
     location /api-docs/oembed {
@@ -149,7 +165,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $oembed_proxy_container/api-docs/oembed;
+      proxy_pass http://oembed-proxy/api-docs/oembed;
     }
 
     location /api-docs/audio {
@@ -159,7 +175,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $audio_container/api-docs/audio;
+      proxy_pass http://audio-api/api-docs/audio;
     }
 
     location ~* ^/article-oembed(.*) {
@@ -181,7 +197,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $article_oembed_container/article-oembed$1$is_args$args;
+      proxy_pass http://article-oembed/article-oembed$1$is_args$args;
     }
 
     location ~* ^/articles(.*) {
@@ -191,34 +207,24 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $article_container/articles$1$is_args$args;
+      proxy_pass http://articles/articles$1$is_args$args;
     }
 
     location ~* ^/images(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $images_container/images$1$is_args$args;
+      proxy_pass http://images/images$1$is_args$args;
     }
 
-    location ~* ^/packages(.*) {
-      if ($location_packages_enabled != true) {
-        return 404;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $packages_container/packages$1$is_args$args;
-    }
-
-    location ~* ^/udir(.*) {
-      if ($location_udir_enabled != true) {
+    location ~* ^/grep(.*) {
+      if ($location_grep_enabled != true) {
             return 404;
       }
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $udir_proxy_container/udir$1$is_args$args;
+      proxy_pass http://grep/grep$1$is_args$args;
     }
 
     location ~* ^/auth/login(.*) {
@@ -241,11 +247,11 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $auth_container/auth/login$1$is_args$args;
+      proxy_pass http://auth/auth/login$1$is_args$args;
     }
 
     location ~* ^/auth(.*) {
-      if ($location_kong_enabled != true) {
+      if ($location_api_gateway_enabled != true) {
         return 404;
       }
 
@@ -264,18 +270,7 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
 
-      proxy_pass $kong_container/auth$1$is_args$args;
-    }
-
-    location ~* ^/h5p(.*) {
-      if ($location_h5p_enabled != true) {
-        return 404;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $h5p_container/h5p$1$is_args$args;
-
+      proxy_pass http://api-gateway/auth$1$is_args$args;
     }
 
     location ~* ^/test-clients(.*) {
@@ -286,7 +281,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $test_clients_container;
+      proxy_pass http://test-clients;
     }
 
 
@@ -309,7 +304,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $kong_container/learningpaths$1$is_args$args;
+      proxy_pass http://api-gateway/learningpaths$1$is_args$args;
     }
 
     location ~* ^/oembed(.*) {
@@ -331,7 +326,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $kong_container/oembed$1$is_args$args;
+      proxy_pass http://api-gateway/oembed$1$is_args$args;
     }
 
     location ~* ^/audio(.*) {
@@ -342,14 +337,14 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $audio_container/audio$1$is_args$args;
+      proxy_pass http://audio-api/audio$1$is_args$args;
     }
 
     location / {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass $documentation_container;
+      proxy_pass http://docs;
     }
   }
 }
