@@ -85,6 +85,7 @@ http {
       resolver               ${DNS_SERVER} valid=300s;
       resolver_timeout       10s;
 
+      proxy_set_header       Referer    'ndla_proxy';
       proxy_pass             https://$s3_bucket/$url_image?;
       proxy_cache image_resize_cache;
       proxy_cache_key "$proxy_host$uri$is_args$args";
