@@ -76,6 +76,8 @@ http {
     set $article_oembed_container 'http://${API_SERVER_IP}:30011';
     set $audio_container 'http://${API_SERVER_IP}:30014';
 
+    set $taxonomy_endpoint 'http://ndla-taxonomy-dev.eu-central-1.elasticbeanstalk.com';
+
     # Need to set environment-variable to nginx variable to be able to use them in if statements.
     set $location_article_enabled ${LOCATION_ARTICLE_ENABLED};
     set $location_udir_enabled ${LOCATION_UDIR_ENABLED};
@@ -182,6 +184,28 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass $article_oembed_container/article-oembed$1$is_args$args;
+    }
+
+    location ~* ^/taxonomy(.*) {
+      add_header 'Access-Control-Allow-Origin' '*';
+      add_header 'Access-Control-Allow-Credentials' 'true';
+
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,app-key';
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'text/plain charset=UTF-8';
+        add_header 'Content-Length' 0;
+        return 204;
+      }
+
+      resolver ${DNS_SERVER} valid=300s;
+      resolver_timeout  10s;
+
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass $taxonomy_endpoint/$1$is_args$args;
     }
 
     location ~* ^/articles(.*) {
