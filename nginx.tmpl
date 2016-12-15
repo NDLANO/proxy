@@ -33,7 +33,7 @@ http {
     set $article_oembed   'article-oembed.ndla-local';
     set $audio_api        'audio-api.ndla-local';
 
-    set $taxonomy_endpoint 'http://ndla-taxonomy-dev.eu-central-1.elasticbeanstalk.com';
+    set $taxonomy_endpoint 'http://ndla-taxonomy-test.uarauzeick.eu-central-1.elasticbeanstalk.com';
 
     location ~* ^/images/(full|thumbs)(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.images.ndla';
