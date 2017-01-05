@@ -35,9 +35,9 @@ http {
 
     set $taxonomy_endpoint 'http://ndla-taxonomy-test.uarauzeick.eu-central-1.elasticbeanstalk.com';
 
-    location ~* ^/images/(full|thumbs)(.*) {
+    location ~* ^/image-api/(v.*)/images/(full|thumbs)(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.images.ndla';
-      set $url_image        '$1$2';
+      set $url_image        '$2$3';
       set $width -;
       set $height -;
 
@@ -65,9 +65,9 @@ http {
       expires 30d;
     }
 
-    location ~* ^/audio/files/(.*) {
+    location ~* ^/audio-api/(v.*)/audio/files/(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.audio.ndla';
-      set $url_image        '$1';
+      set $url_image        '$2';
 
       proxy_set_header       Referer    'ndla_proxy';
       proxy_pass             https://$s3_bucket/$url_image;
@@ -78,46 +78,46 @@ http {
         return 200;
     }
 
-    location /api-docs/articles {
+    location ~* ^/article-api/api-docs(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$articles/api-docs/articles;
+      proxy_pass http://$articles/api-docs$1$is_args$args;
     }
 
-    location /api-docs/images {
+    location ~* ^/image-api/api-docs(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$images/api-docs/images;
+      proxy_pass http://$images/api-docs$1$is_args$args;
     }
 
-    location /api-docs/grep {
+    location ~* ^/grep/api-docs(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$grep/api-docs/grep;
+      proxy_pass http://$grep/api-docs$1$is_args$args;
     }
 
-    location /api-docs/learningpaths {
+    location ~* ^/learningpath-api/api-docs(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$learningpath_api/api-docs/learningpaths;
+      proxy_pass http://$learningpath_api/api-docs$1$is_args$args;
     }
 
-    location /api-docs/oembed {
+    location ~* ^/oembed-proxy/api-docs(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$oembed_proxy/api-docs/oembed;
+      proxy_pass http://$oembed_proxy/api-docs$1$is_args$args;
     }
 
-    location /api-docs/audio {
+    location ~* ^/audio-api/api-docs(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$audio_api/api-docs/audio;
+      proxy_pass http://$audio_api/api-docs$1$is_args$args;
     }
 
     location ~* ^/article-oembed(.*) {
@@ -160,18 +160,18 @@ http {
       proxy_pass $taxonomy_endpoint/$1$is_args$args;
     }
 
-    location ~* ^/articles(.*) {
+    location ~* ^/article-api(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$articles/articles$1$is_args$args;
+      proxy_pass http://$articles/article-api$1$is_args$args;
     }
 
-    location ~* ^/images(.*) {
+    location ~* ^/image-api(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$images/images$1$is_args$args;
+      proxy_pass http://$images/image-api$1$is_args$args;
     }
 
     location ~* ^/grep(.*) {
@@ -227,7 +227,7 @@ http {
     }
 
 
-    location ~* ^/learningpaths(.*) {
+    location ~* ^/learningpath-api(.*) {
       if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Credentials' 'true';
@@ -242,10 +242,10 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$api_gateway/learningpaths$1$is_args$args;
+      proxy_pass http://$api_gateway/learningpath-api$1$is_args$args;
     }
 
-    location ~* ^/oembed(.*) {
+    location ~* ^/oembed-proxy(.*) {
       if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Credentials' 'true';
@@ -260,10 +260,10 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$api_gateway/oembed$1$is_args$args;
+      proxy_pass http://$api_gateway/oembed-proxy$1$is_args$args;
     }
 
-    location ~* ^/audio(.*) {
+    location ~* ^/audio-api(.*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
