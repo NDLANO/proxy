@@ -168,7 +168,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$articles/article-api$1$is_args$args;
+      proxy_pass http://$api_gateway/article-api$1$is_args$args;
     }
 
     location ~* ^/image-api(.*) {
@@ -182,7 +182,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$grep/grep$1$is_args$args;
+      proxy_pass http://$api_gateway/grep$1$is_args$args;
     }
 
     location ~* ^/auth/login(.*) {
@@ -271,7 +271,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$audio_api/audio-api$1$is_args$args;
+      proxy_pass http://$api_gateway/audio-api$1$is_args$args;
     }
 
     location ~* ^/monitoring(.*) {
