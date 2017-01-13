@@ -65,9 +65,9 @@ http {
       expires 30d;
     }
 
-    location ~* ^/audio-api/(v.*)/audio/files/(.*) {
+    location ~* ^/audio/files/(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.audio.ndla';
-      set $url_image        '$2';
+      set $url_image        '$1';
 
       proxy_set_header       Referer    'ndla_proxy';
       proxy_pass             https://$s3_bucket/$url_image;
