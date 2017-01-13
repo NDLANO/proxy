@@ -124,7 +124,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$taxonomy_endpoint/v2/api-docs$1$is_args$args;
+      proxy_pass http://$taxonomy_endpoint/v1/api-docs$1$is_args$args;
     }
 
     location ~* ^/article-oembed(.*) {
