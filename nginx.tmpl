@@ -175,7 +175,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$images/image-api$1$is_args$args;
+      proxy_pass http://$api-gateway/image-api$1$is_args$args;
     }
 
     location ~* ^/grep(.*) {
