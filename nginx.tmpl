@@ -48,8 +48,8 @@ http {
     server test-clients.ndla-local;
   }
 
-  upstream article-oembed {
-    server article-oembed.ndla-local;
+  upstream article-converter {
+    server article-converter.ndla-local;
   }
 
   upstream audio-api {
@@ -178,7 +178,7 @@ http {
       proxy_pass http://audio-api/api-docs/audio;
     }
 
-    location ~* ^/article-oembed(.*) {
+    location ~* ^/article-converter(.*) {
       if ($location_article_oembed_enabled != "true") {
         return 404;
       }
@@ -197,7 +197,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://article-oembed/article-oembed$1$is_args$args;
+      proxy_pass http://article-converter/article-converter$1$is_args$args;
     }
 
     location ~* ^/articles(.*) {
