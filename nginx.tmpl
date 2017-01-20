@@ -30,7 +30,7 @@ http {
     set $learningpath_api 'learningpath-api.ndla-local';
     set $oembed_proxy     'oembed-proxy.ndla-local';
     set $test_clients     'test-clients.ndla-local';
-    set $article_oembed   'article-oembed.ndla-local';
+    set $article_oembed   'article-converter.ndla-local';
     set $audio_api        'audio-api.ndla-local';
 
     set $taxonomy_endpoint 'ndla-taxonomy-test.uarauzeick.eu-central-1.elasticbeanstalk.com';
@@ -127,7 +127,7 @@ http {
       proxy_pass http://$taxonomy_endpoint/v1/api-docs$1$is_args$args;
     }
 
-    location ~* ^/article-oembed(.*) {
+    location ~* ^/article-converter(.*) {
       if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Credentials' 'true';
@@ -142,7 +142,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$article_oembed/article-oembed$1$is_args$args;
+      proxy_pass http://$article_oembed/article-converter$1$is_args$args;
     }
 
     location ~* ^/taxonomy(.*) {
