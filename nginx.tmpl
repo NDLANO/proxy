@@ -21,17 +21,17 @@ http {
 
     resolver 127.0.0.11;
 
-    set $docs             'api-documentation.ndla-local';
-    set $articles         'article-api.ndla-local';
-    set $images           'image-api.ndla-local';
-    set $grep             'grep.ndla-local';
-    set $auth             'auth.ndla-local';
-    set $api_gateway      'api-gateway.ndla-local';
-    set $learningpath_api 'learningpath-api.ndla-local';
-    set $oembed_proxy     'oembed-proxy.ndla-local';
-    set $test_clients     'test-clients.ndla-local';
-    set $article_oembed   'article-converter.ndla-local';
-    set $audio_api        'audio-api.ndla-local';
+    set $docs              'api-documentation.ndla-local';
+    set $articles          'article-api.ndla-local';
+    set $images            'image-api.ndla-local';
+    set $grep              'grep.ndla-local';
+    set $auth              'auth.ndla-local';
+    set $api_gateway       'api-gateway.ndla-local';
+    set $learningpath_api  'learningpath-api.ndla-local';
+    set $oembed_proxy      'oembed-proxy.ndla-local';
+    set $test_clients      'test-clients.ndla-local';
+    set $article_converter 'article-converter.ndla-local';
+    set $audio_api         'audio-api.ndla-local';
 
     set $taxonomy_endpoint 'ndla-taxonomy-test.uarauzeick.eu-central-1.elasticbeanstalk.com';
 
@@ -142,7 +142,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://$article_oembed/article-converter$1$is_args$args;
+      proxy_pass http://$article_converter/article-converter$1$is_args$args;
     }
 
     location ~* ^/taxonomy(.*) {
