@@ -90,6 +90,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$articles/api-docs$1$is_args$args;
     }
 
@@ -97,6 +98,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$images/api-docs$1$is_args$args;
     }
 
@@ -104,6 +106,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$grep/api-docs$1$is_args$args;
     }
 
@@ -111,6 +114,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$learningpath_api/api-docs$1$is_args$args;
     }
 
@@ -118,6 +122,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$oembed_proxy/api-docs$1$is_args$args;
     }
 
@@ -125,6 +130,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$audio_api/api-docs$1$is_args$args;
     }
 
@@ -132,6 +138,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$taxonomy_endpoint/v1/api-docs$1$is_args$args;
     }
 
@@ -150,6 +157,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$article_converter/article-converter$1$is_args$args;
     }
 
@@ -169,6 +177,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/taxonomy$1$is_args$args;
     }
 
@@ -176,6 +185,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/article-api$1$is_args$args;
     }
 
@@ -191,6 +201,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/grep$1$is_args$args;
     }
 
@@ -210,6 +221,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$auth/auth/login$1$is_args$args;
     }
 
@@ -228,6 +240,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
 
       proxy_pass http://$api_gateway/auth$1$is_args$args;
     }
@@ -236,6 +249,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$test_clients$1$is_args$args;
     }
 
@@ -255,6 +269,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/learningpath-api$1$is_args$args;
     }
 
@@ -273,6 +288,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/oembed-proxy$1$is_args$args;
     }
 
@@ -280,6 +296,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/audio-api$1$is_args$args;
     }
 
@@ -287,6 +304,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/monitoring$1$is_args$args;
     }
 
@@ -294,6 +312,7 @@ http {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$docs;
     }
   }
