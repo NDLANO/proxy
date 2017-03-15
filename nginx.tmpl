@@ -38,6 +38,7 @@ http {
     set $test_clients      'test-clients.ndla-local';
     set $article_converter 'article-converter.ndla-local';
     set $audio_api         'audio-api.ndla-local';
+    set $listing_api       'listing-api.ndla-local';
 
     set $taxonomy_endpoint 'ndla-taxonomy-test.uarauzeick.eu-central-1.elasticbeanstalk.com';
 
@@ -108,6 +109,14 @@ http {
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$taxonomy_endpoint/v1/api-docs$1$is_args$args;
+    }
+
+    location ~* ^/listing-api/api-docs(.*) {
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
+      proxy_pass http://$listing_api/api-docs$1$is_args$args;
     }
 
     location ~* ^/article-converter(.*) {
@@ -294,6 +303,14 @@ http {
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
       proxy_pass http://$api_gateway/monitoring$1$is_args$args;
+    }
+
+    location ~* ^/listing-api(.*) {
+      proxy_set_header  Host $http_host;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
+      proxy_pass http://$api_gateway/listing-api$1$is_args$args;
     }
 
     location / {
