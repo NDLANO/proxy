@@ -220,7 +220,7 @@ http {
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
 
-      proxy_pass http://$auth/auth$1$is_args$args;
+      proxy_pass http://$api_gateway/auth$1$is_args$args;
     }
 
     location ~* ^/test-clients(.*) {
