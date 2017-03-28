@@ -40,7 +40,7 @@ http {
     set $audio_api         'audio-api.ndla-local';
     set $listing_api       'listing-api.ndla-local';
 
-    set $taxonomy_endpoint 'ndla-taxonomy-test.uarauzeick.eu-central-1.elasticbeanstalk.com';
+    set $taxonomy_endpoint 'ndla-taxonomy-${NDLA_ENVIRONMENT}.uarauzeick.eu-central-1.elasticbeanstalk.com';
 
     location ~* ^/audio/files/(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.audio.ndla';
