@@ -27,21 +27,8 @@ http {
 
     resolver 127.0.0.11;
 
-    set $docs              'api-documentation.ndla-local';
-    set $articles          'article-api.ndla-local';
     set $images            'image-api.ndla-local';
-    set $grep              'grep.ndla-local';
-    set $auth              'auth.ndla-local';
     set $api_gateway       'api-gateway.ndla-local';
-    set $learningpath_api  'learningpath-api.ndla-local';
-    set $oembed_proxy      'oembed-proxy.ndla-local';
-    set $test_clients      'test-clients.ndla-local';
-    set $article_converter 'article-converter.ndla-local';
-    set $audio_api         'audio-api.ndla-local';
-    set $listing_api       'listing-api.ndla-local';
-    set $crowdin_gateway   'crowdin-gateway.ndla-local';
-
-    set $taxonomy_endpoint 'ndla-taxonomy-${NDLA_ENVIRONMENT}.uarauzeick.eu-central-1.elasticbeanstalk.com';
 
     location ~* ^/audio/files/(.*) {
       set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.audio.ndla';
@@ -49,142 +36,6 @@ http {
 
       proxy_set_header       Referer    'ndla_proxy';
       proxy_pass             https://$s3_bucket/$url_image;
-    }
-
-    location ~* ^/health$ {
-        add_header 'Content-Length' 0;
-        return 200;
-    }
-
-    location ~* ^/article-api/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$articles/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/image-api/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$images/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/grep/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$grep/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/learningpath-api/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$learningpath_api/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/oembed-proxy/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$oembed_proxy/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/audio-api/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$audio_api/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/taxonomy/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$taxonomy_endpoint/v1/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/listing-api/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$listing_api/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/crowdin-gateway/api-docs(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$crowdin_gateway/api-docs$1$is_args$args;
-    }
-
-    location ~* ^/article-converter(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$article_converter/article-converter$1$is_args$args;
-    }
-
-    location ~* ^/taxonomy(.*) {
-      add_header 'Access-Control-Allow-Origin' '*';
-      add_header 'Access-Control-Allow-Credentials' 'true';
-
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/taxonomy$1$is_args$args;
-    }
-
-    location ~* ^/article-api(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/article-api$1$is_args$args;
     }
 
     location ~* ^/image-api/(v.*)/raw/(.*) {
@@ -207,150 +58,9 @@ http {
       expires 30d;
     }
 
-    location ~* ^/image-api(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
+    location ~* ^/health$ {
         add_header 'Content-Length' 0;
-        return 204;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/image-api$1$is_args$args;
-    }
-
-    location ~* ^/grep(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/grep$1$is_args$args;
-    }
-
-    location ~* ^/auth(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-
-      proxy_pass http://$api_gateway/auth$1$is_args$args;
-    }
-
-    location ~* ^/test-clients(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$test_clients$1$is_args$args;
-    }
-
-
-    location ~* ^/learningpath-api(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/learningpath-api$1$is_args$args;
-    }
-
-    location ~* ^/oembed-proxy(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/oembed-proxy$1$is_args$args;
-    }
-
-    location ~* ^/audio-api(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/audio-api$1$is_args$args;
-    }
-
-    location ~* ^/monitoring(.*) {
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/monitoring$1$is_args$args;
-    }
-
-    location ~* ^/listing-api(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/listing-api$1$is_args$args;
-    }
-
-    location ~* ^/crowdin-gateway(.*) {
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-
-      proxy_set_header  Host $http_host;
-      proxy_set_header  X-Real-IP $remote_addr;
-      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$api_gateway/crowdin-gateway$1$is_args$args;
+        return 200;
     }
 
     location / {
@@ -358,7 +68,7 @@ http {
       proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header  Forwarded "for=$remote_addr;proto=$http_x_forwarded_proto";
-      proxy_pass http://$docs;
+      proxy_pass http://$api_gateway;
     }
   }
 }
