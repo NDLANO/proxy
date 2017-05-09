@@ -27,6 +27,12 @@ http {
     return 301 https://$host$request_uri;
   }
 
+  server {
+    listen 80;
+    server_name "";
+    return 444;
+  }
+
   # Port 80 brukes fra ELB port 443
   server {
     server_name *.ndla.no;
