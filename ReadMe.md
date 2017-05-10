@@ -8,4 +8,3 @@ Nginx proxy for NDLA
     ./build.sh
 
 You need to have a docker daemon running locally.
-
