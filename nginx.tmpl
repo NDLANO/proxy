@@ -85,6 +85,14 @@ http {
       expires 30d;
     }
 
+    location ~* ^/files/(.*) {
+      set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.article-attachments.ndla';
+      set $url_file         '$1';
+
+      proxy_set_header       Referer    'ndla_proxy';
+      proxy_pass             https://$s3_bucket/$url_file;
+    }
+
     location / {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
