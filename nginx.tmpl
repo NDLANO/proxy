@@ -85,12 +85,6 @@ http {
       expires 30d;
     }
 
-    location ~* ^/health$ {
-        add_header 'Content-Length' 0;
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-        return 200;
-    }
-
     location ~* ^/([^/]*) {
       proxy_set_header  Host $http_host;
       proxy_set_header  X-Real-IP $remote_addr;
