@@ -54,7 +54,6 @@ http {
 
     resolver 127.0.0.11;
 
-    set $images            'image-api.ndla-local';
     set $api_gateway       'api-gateway.ndla-local';
 
     location ~* ^/audio/files/(.*) {
@@ -83,7 +82,7 @@ http {
     }
 
     location ~* ^/image-api/raw/(.*) {
-      set $s3_bucket        's3.eu-central-1.amazonaws.com/test.images.ndla';
+      set $s3_bucket        's3.eu-central-1.amazonaws.com/${NDLA_ENVIRONMENT}.images.ndla';
       set $url_image        'http://$api_gateway/image-api/raw/$1$is_args$args';
       set $image_name 	    '$1';
 
