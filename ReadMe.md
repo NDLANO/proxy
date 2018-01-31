@@ -1,3 +1,5 @@
+DEPRECATED
+
 # PROXY
 
 Nginx proxy for NDLA
