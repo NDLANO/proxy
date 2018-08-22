@@ -1,4 +1,4 @@
-FROM nginx:1.14.0
+FROM nginx:1.14.0-alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx-caches-default.conf /etc/nginx/
