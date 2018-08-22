@@ -1,10 +1,11 @@
-FROM nginx:1.11.5
+FROM nginx:1.14.0
 
-# Delete examplefiles
-RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx-caches-default.conf /etc/nginx/
+COPY nginx-caches-prod.conf /etc/nginx/
 
-COPY nginx.tmpl /etc/nginx/nginx.tmpl
 COPY start-nginx.sh /start-nginx.sh
+
 RUN chmod +x /start-nginx.sh
 
 CMD ["/start-nginx.sh"]

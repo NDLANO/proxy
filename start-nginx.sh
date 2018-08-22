@@ -1,6 +1,13 @@
 #!/bin/sh
-# Create nginx.conf by reading nginx.tmpl and replace envoriment variables for the placeholders ${ENVIROMENT_VARIABLE_NAME} and save the result to nginx.conf.
-awk '{while(match($0,"[$]{[^}]*}")) {var=substr($0,RSTART+2,RLENGTH -3);gsub("[$]{"var"}",ENVIRON[var])}}1' < /etc/nginx/nginx.tmpl > /etc/nginx/nginx.conf
 
-# Start nginx in the foreground.
+function setup_nginx_caches {
+    if [ $NDLA_ENVIRONMENT == "staging" ] || [ $NDLA_ENVIRONMENT == "prod" ]; then
+	    ln -fs /etc/nginx/nginx-caches-prod.conf /etc/nginx/nginx-caches.conf
+    else
+        ln -fs /etc/nginx/nginx-caches-default.conf /etc/nginx/nginx-caches.conf
+    fi
+}
+
+setup_nginx_caches
+
 nginx -g 'daemon off;'
