@@ -1,8 +1,6 @@
-**_DEPRECATED_**
-
 # PROXY
 
-Nginx proxy for NDLA
+Nginx proxy for ndla.no
 
 # Building and distribution
 
