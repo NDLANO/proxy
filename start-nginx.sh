@@ -12,7 +12,7 @@ function setup_nginx_caches {
     fi
 }
 
-setup_env_variables
+replace_env_variables
 
 setup_nginx_caches
 
