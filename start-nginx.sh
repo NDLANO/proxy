@@ -1,5 +1,9 @@
 #!/bin/sh
 
+function is_kubernetes {
+    [ -e "/var/run/secrets/kubernetes.io" ]
+}
+
 function replace_env_variables {
     sed -i -- "s/NDLA_ENVIRONMENT/${NDLA_ENVIRONMENT/_/-}/g" /etc/nginx/nginx.conf
 }
@@ -12,8 +16,18 @@ function setup_nginx_caches {
     fi
 }
 
+function setup_dns_resolver {
+    if is_kubernetes; then # Check whether we are running on kubernetes or not
+        echo "resolver kube-dns.kube-system.svc.cluster.local;" > /nginx-resolver.conf
+    else
+        echo "resolver 127.0.0.11;" > /nginx-resolver.conf
+    fi
+}
+
 replace_env_variables
 
 setup_nginx_caches
+
+setup_dns_resolver
 
 nginx -g 'daemon off;'
