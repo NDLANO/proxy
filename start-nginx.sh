@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function replace_env_variables {
-    sed -i -- "s/NDLA_ENVIRONMENT/$NDLA_ENVIRONMENT/g" /etc/nginx/nginx.conf
+    sed -i -- "s/NDLA_ENVIRONMENT/${NDLA_ENVIRONMENT/_/-}/g" /etc/nginx/nginx.conf
 }
 
 function setup_nginx_caches {
