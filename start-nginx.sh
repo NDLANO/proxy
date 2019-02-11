@@ -24,10 +24,22 @@ function setup_dns_resolver {
     fi
 }
 
+function setup_frontend_hostnames {
+    if is_kubernetes; then
+        echo "set \$frontend 'ndla-frontend.default.svc.cluster.local';" > /ndla-frontend-hostname.conf
+        echo "set \$frontend 'learningpath-frontend.default.svc.cluster.local';" >> /learningpath-frontend-hostname.conf
+    else
+        echo "set \$frontend 'ndla-frontend.ndla-local';" > /ndla-frontend-hostname.conf
+        echo "set \$frontend 'learningpath-frontend.ndla-local';" >> /learningpath-frontend-hostname.conf
+    fi
+}
+
 replace_env_variables
 
 setup_nginx_caches
 
 setup_dns_resolver
+
+setup_frontend_hostnames
 
 nginx -g 'daemon off;'
