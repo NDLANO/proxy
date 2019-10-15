@@ -9,7 +9,7 @@ function replace_env_variables {
 }
 
 function setup_nginx_caches {
-    if [ $NDLA_ENVIRONMENT == "staging" ] || [ $NDLA_ENVIRONMENT == "prod" ]; then
+    if [ $NDLA_ENVIRONMENT == "staging" ] || [ $NDLA_ENVIRONMENT == "prod" ] || [ $NDLA_ENVIRONMENT == "ff" ]; then
 	    ln -fs /etc/nginx/nginx-caches-prod.conf /etc/nginx/nginx-caches.conf
     else
         ln -fs /etc/nginx/nginx-caches-default.conf /etc/nginx/nginx-caches.conf
