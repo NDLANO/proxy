@@ -28,9 +28,11 @@ function setup_frontend_hostnames {
     if is_kubernetes; then
         echo "set \$frontend 'ndla-frontend.default.svc.cluster.local';" > /ndla-frontend-hostname.conf
         echo "set \$frontend 'learningpath-frontend.default.svc.cluster.local';" >> /learningpath-frontend-hostname.conf
+        echo "set \$frontend 'listing-frontend.default.svc.cluster.local';" >> /listing-frontend-hostname.conf
     else
         echo "set \$frontend 'ndla-frontend.ndla-local';" > /ndla-frontend-hostname.conf
         echo "set \$frontend 'learningpath-frontend.ndla-local';" >> /learningpath-frontend-hostname.conf
+        echo "set \$frontend 'listing-frontend.ndla-local';" >> /listing-frontend-hostname.conf
     fi
 }
 
