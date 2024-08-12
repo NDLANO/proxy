@@ -2,6 +2,9 @@
 
 Nginx proxy for ndla.no
 
+## Deprecated!
+Replaced with ndla-ingress in k8s
+
 # Building and distribution
 
 ## Create Docker Image
