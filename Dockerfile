@@ -1,4 +1,4 @@
-FROM nginx:1.25.3-alpine-slim
+FROM nginx:1.26.1-alpine-slim
 
 COPY start-nginx.sh /start-nginx.sh
 RUN chmod +x /start-nginx.sh
